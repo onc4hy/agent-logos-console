@@ -11,9 +11,9 @@
 
 ### AI Coding 的体验报告
 
-> 可浏览随手发布在 juejin.cn 上的文章 
+> 可浏览code up主随手发布在 juejin.cn 上的关于AI Coding的文章 
 >
-> [https://juejin.cn/post/6844904198238088199](https://juejin.cn/post/6844904198238088199)
+> <a href="https://juejin.cn/post/7549162225790074880" target="_blank">2025使用AI Coding 生成代码的一些体验,评测,思考,实践（一）</a>
 
 ## 项目概述
 
