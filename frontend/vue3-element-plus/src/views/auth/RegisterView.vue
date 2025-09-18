@@ -108,9 +108,12 @@ import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { FormItemRule } from 'element-plus'
+import { sendPhoneCode, register } from '@/services/authService'
 
 const router = useRouter()
 const activeTab = ref('sms')
+const smsFormRef = ref()
+const emailFormRef = ref()
 
 // 短信注册表单
 const smsForm = reactive({
@@ -172,7 +175,7 @@ const smsCodeButtonText = computed(() => {
 })
 
 // 发送短信验证码
-const sendSmsCode = () => {
+const sendSmsCode = async () => {
   if (!smsForm.phone) {
     ElMessage.error('请输入手机号')
     return
@@ -183,40 +186,103 @@ const sendSmsCode = () => {
     return
   }
 
-  // 模拟发送验证码
-  smsCodeDisabled.value = true
-  smsCodeCountdown.value = 60
+  const result = await sendPhoneCode(smsForm.phone)
+  if (result.success) {
+    smsCodeDisabled.value = true
+    smsCodeCountdown.value = 60
 
-  const timer = setInterval(() => {
-    smsCodeCountdown.value--
-    if (smsCodeCountdown.value <= 0) {
-      clearInterval(timer)
-      smsCodeDisabled.value = false
-    }
-  }, 1000)
+    const timer = setInterval(() => {
+      smsCodeCountdown.value--
+      if (smsCodeCountdown.value <= 0) {
+        clearInterval(timer)
+        smsCodeDisabled.value = false
+      }
+    }, 1000)
 
-  ElMessage.success('验证码已发送')
+    ElMessage.success('验证码已发送')
+  } else {
+    ElMessage.error(result.error || '验证码发送失败')
+  }
 }
 
 // 短信注册处理
-const handleSmsRegister = () => {
-  // 这里应该调用注册API
-  ElMessage.success('注册成功')
+const handleSmsRegister = async () => {
+  if (!smsForm.phone || !smsForm.code) {
+    ElMessage.error('请输入手机号和验证码')
+    return
+  }
 
-  // 通过事件更新主布局的登录状态
-  window.dispatchEvent(new CustomEvent('user-login', { detail: { isLoggedIn: true, name: '用户' } }))
+  // 短信注册实际上就是登录，因为后端会自动创建用户
+  const result = await register({
+    email: `${smsForm.phone}@sms.user`, // 为短信注册用户生成一个虚拟邮箱
+    password: smsForm.code, // 使用验证码作为初始密码
+    name: `用户${smsForm.phone.slice(-4)}`, // 使用手机号后四位作为用户名
+    phone: smsForm.phone
+  })
 
-  router.push('/dashboard')
+  if (result.success && result.data) {
+    // 保存用户信息
+    if (result.data.access_token && result.data.user) {
+      localStorage.setItem('token', result.data.access_token)
+      localStorage.setItem('user', JSON.stringify(result.data.user))
+    }
+
+    ElMessage.success('注册成功')
+
+    // 通过事件更新主布局的登录状态
+    window.dispatchEvent(new CustomEvent('user-login', {
+      detail: {
+        isLoggedIn: true,
+        name: result.data.user?.name || '用户',
+        user: result.data.user
+      }
+    }))
+
+    router.push('/dashboard')
+  } else {
+    ElMessage.error(result.error || '注册失败')
+  }
 }
 
 // 邮箱注册处理
-const handleEmailRegister = () => {
-  // 这里应该调用注册API
-  ElMessage.success('注册成功')
+const handleEmailRegister = async () => {
+  if (!emailForm.email || !emailForm.password) {
+    ElMessage.error('请输入邮箱和密码')
+    return
+  }
 
-  // 通过事件更新主布局的登录状态
-  window.dispatchEvent(new CustomEvent('user-login', { detail: { isLoggedIn: true, name: '用户' } }))
+  if (emailForm.password !== emailForm.confirmPassword) {
+    ElMessage.error('两次输入的密码不一致')
+    return
+  }
 
-  router.push('/dashboard')
+  const result = await register({
+    email: emailForm.email,
+    password: emailForm.password,
+    name: emailForm.email.split('@')[0] // 使用邮箱用户名作为显示名
+  })
+
+  if (result.success && result.data) {
+    // 保存用户信息
+    if (result.data.access_token && result.data.user) {
+      localStorage.setItem('token', result.data.access_token)
+      localStorage.setItem('user', JSON.stringify(result.data.user))
+    }
+
+    ElMessage.success('注册成功')
+
+    // 通过事件更新主布局的登录状态
+    window.dispatchEvent(new CustomEvent('user-login', {
+      detail: {
+        isLoggedIn: true,
+        name: result.data.user?.name || '用户',
+        user: result.data.user
+      }
+    }))
+
+    router.push('/dashboard')
+  } else {
+    ElMessage.error(result.error || '注册失败')
+  }
 }
 </script>

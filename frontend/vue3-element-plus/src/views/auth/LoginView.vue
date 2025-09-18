@@ -3,9 +3,12 @@ import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { FormRules } from 'element-plus'
+import { sendPhoneCode, loginWithPhone, loginWithEmail } from '@/services/authService'
 
 const router = useRouter()
 const activeTab = ref('sms')
+const smsFormRef = ref()
+const passwordFormRef = ref()
 
 // 短信登录表单
 const smsForm = reactive({
@@ -53,7 +56,7 @@ const smsCodeButtonText = computed(() => {
 })
 
 // 发送短信验证码
-const sendSmsCode = () => {
+const sendSmsCode = async () => {
   if (!smsForm.phone) {
     ElMessage.error('请输入手机号')
     return
@@ -64,41 +67,87 @@ const sendSmsCode = () => {
     return
   }
 
-  // 模拟发送验证码
-  smsCodeDisabled.value = true
-  smsCodeCountdown.value = 60
+  const result = await sendPhoneCode(smsForm.phone)
+  if (result.success) {
+    smsCodeDisabled.value = true
+    smsCodeCountdown.value = 60
 
-  const timer = setInterval(() => {
-    smsCodeCountdown.value--
-    if (smsCodeCountdown.value <= 0) {
-      clearInterval(timer)
-      smsCodeDisabled.value = false
-    }
-  }, 1000)
+    const timer = setInterval(() => {
+      smsCodeCountdown.value--
+      if (smsCodeCountdown.value <= 0) {
+        clearInterval(timer)
+        smsCodeDisabled.value = false
+      }
+    }, 1000)
 
-  ElMessage.success('验证码已发送')
+    ElMessage.success('验证码已发送')
+  } else {
+    ElMessage.error(result.error || '验证码发送失败')
+  }
 }
 
 // 短信登录处理
-const handleSmsLogin = () => {
-  // 这里应该调用登录API
-  ElMessage.success('登录成功')
+const handleSmsLogin = async () => {
+  if (!smsForm.phone || !smsForm.code) {
+    ElMessage.error('请输入手机号和验证码')
+    return
+  }
 
-  // 通过事件更新主布局的登录状态
-  window.dispatchEvent(new CustomEvent('user-login', { detail: { isLoggedIn: true, name: '用户' } }))
+  const result = await loginWithPhone(smsForm.phone, smsForm.code)
+  if (result.success && result.data) {
+    // 保存用户信息
+    if (result.data.access_token && result.data.user) {
+      localStorage.setItem('token', result.data.access_token)
+      localStorage.setItem('user', JSON.stringify(result.data.user))
+    }
 
-  router.push('/dashboard')
+    ElMessage.success('登录成功')
+
+    // 通过事件更新主布局的登录状态
+    window.dispatchEvent(new CustomEvent('user-login', {
+      detail: {
+        isLoggedIn: true,
+        name: result.data.user?.name || '用户',
+        user: result.data.user
+      }
+    }))
+
+    router.push('/dashboard')
+  } else {
+    ElMessage.error(result.error || '登录失败')
+  }
 }
 
 // 密码登录处理
-const handlePasswordLogin = () => {
-  // 这里应该调用登录API
-  ElMessage.success('登录成功')
+const handlePasswordLogin = async () => {
+  if (!passwordForm.email || !passwordForm.password) {
+    ElMessage.error('请输入邮箱和密码')
+    return
+  }
 
-  // 通过事件更新主布局的登录状态
-  window.dispatchEvent(new CustomEvent('user-login', { detail: { isLoggedIn: true, name: '用户' } }))
+  const result = await loginWithEmail(passwordForm.email, passwordForm.password)
+  if (result.success && result.data) {
+    // 保存用户信息
+    if (result.data.access_token && result.data.user) {
+      localStorage.setItem('token', result.data.access_token)
+      localStorage.setItem('user', JSON.stringify(result.data.user))
+    }
 
-  router.push('/dashboard')
+    ElMessage.success('登录成功')
+
+    // 通过事件更新主布局的登录状态
+    window.dispatchEvent(new CustomEvent('user-login', {
+      detail: {
+        isLoggedIn: true,
+        name: result.data.user?.name || '用户',
+        user: result.data.user
+      }
+    }))
+
+    router.push('/dashboard')
+  } else {
+    ElMessage.error(result.error || '登录失败')
+  }
 }
 </script>
 

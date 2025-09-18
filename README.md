@@ -2,20 +2,39 @@
 
 ## 项目开发缘起
 
-AI Coding已经进入到代理型Coding的成熟时代，
-为了正式的体验和测试AI Coding的边界，所以就有了这个项目。
-至于针对功能，是随手找了一个有实际需求的目标，项目就这么产生了。
-至少到代码的目前阶段，无论前后端，无论是几种类型，
-都是在对话中由AI Coding 工具生成的。
-可以快速的看到AI Coding 的效果.
+> AI Coding已经进入到代理型Coding的成熟时代，
+> 为了正式的体验和测试AI Coding的边界，所以就有了这个项目。
+> 至于针对功能，是随手找了一个有实际需求的目标，项目就这么产生了。
+> 至少到代码的目前阶段，无论前后端，无论是几种类型，
+> 都是在对话中由AI Coding 工具生成的。
+> 可以快速的看到AI Coding 的效果.
 
 ### AI Coding 的体验报告
 
-可浏览随手发布在 juejin.cn 上的文章 
+> 可浏览随手发布在 juejin.cn 上的文章 
 
 ## 项目概述
 
-基本由AI Coding工具驱动和代码生成的智能体调音台是一个为个人或公司提供创建、编辑、配置和部署AI智能体到第三方平台的SaaS服务平台。该项目包含前端和后端两个部分。目前已具备前端:vue3(element-plus),后端:node(nestjs),python(fastapi)的实现版本。
+> 基本由AI Coding工具驱动和代码生成的智能体调音台是一个为个人或公司提供创建、编辑、配置和部署AI智能体到第三方平台的SaaS服务平台。
+> 该项目包含前端和后端两个部分。
+> 前端:vue3(element-plus),react版本后续
+> 后端:node(nestjs),python(fastapi)的实现版本，java版本后续，其他版本（例如go)看情况
+
+## 效果预览
+
+- 前端
+  - 首页
+   ![首页](./docs/screenshots/home.png)
+  - 智能体广场
+   ![首页](./docs/screenshots/agents.png)
+  - 社区
+   ![首页](./docs/screenshots/community.png)
+  - 价格
+   ![首页](./docs/screenshots/pricing.png)
+  - 登录
+   ![首页](./docs/screenshots/login.png)
+  - 注册
+   ![首页](./docs/screenshots/register.png)
 
 ## 前端 (frontend)
 
