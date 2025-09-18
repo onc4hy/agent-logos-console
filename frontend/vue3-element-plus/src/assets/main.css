@@ -1,0 +1,8 @@
+@import "tailwindcss";
+/* @tailwind utilities; */
+
+/* 全局样式 */
+body {
+  background-color: #F5F5F7;
+  font-family: 'Source Han Sans', 'Noto Sans CJK', sans-serif;
+}
