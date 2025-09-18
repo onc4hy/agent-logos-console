@@ -105,9 +105,21 @@ function startAutoSave() {
     console.log('Existing auto-save interval cleared')
   }
 
+  // 检查数据源是否已初始化
+  if (!AppDataSource.isInitialized) {
+    console.warn('DataSource is not initialized. Skipping auto-save.')
+    return false
+  }
+
   // 每5分钟将内存中的数据持久化到数据库文件
   autoSaveInterval = setInterval(
     () => {
+      // 确保数据源已初始化
+      if (!AppDataSource.isInitialized) {
+        console.warn('DataSource is not initialized. Skipping auto-save.')
+        return
+      }
+
       // 使用TypeORM的queryRunner执行PRAGMA命令将内存数据写入文件
       AppDataSource.query('PRAGMA wal_checkpoint(TRUNCATE);')
         .then(() => {
