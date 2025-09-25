@@ -45,7 +45,8 @@ export class McpController {
       res.setHeader('Access-Control-Allow-Origin', '*')
 
       // 调用服务获取流式响应
-      const stream: IncomingMessage = await this.mcpService.chatWithModel(chatRequest)
+      const stream: IncomingMessage =
+        await this.mcpService.chatWithModel(chatRequest)
 
       // 监听流数据并发送给客户端
       stream.on('data', (chunk: any) => {
@@ -85,7 +86,8 @@ export class McpController {
   @ApiUnauthorizedResponse({ description: 'API 密钥无效' })
   @ApiInternalServerErrorResponse({ description: '服务器内部错误' })
   async searchWithWeb(
-    @Body(new ValidationPipe({ transform: true })) searchRequest: SearchRequestDto,
+    @Body(new ValidationPipe({ transform: true }))
+    searchRequest: SearchRequestDto,
     @Res() res: Response,
   ) {
     try {
@@ -96,7 +98,8 @@ export class McpController {
       res.setHeader('Access-Control-Allow-Origin', '*')
 
       // 调用服务获取流式响应
-      const stream: IncomingMessage = await this.mcpService.searchWithWeb(searchRequest)
+      const stream: IncomingMessage =
+        await this.mcpService.searchWithWeb(searchRequest)
 
       // 监听流数据并发送给客户端
       stream.on('data', (chunk: any) => {

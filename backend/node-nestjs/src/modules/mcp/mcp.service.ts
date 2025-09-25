@@ -17,7 +17,8 @@ export class McpService {
   async chatWithModel(chatRequest: ChatRequestDto): Promise<IncomingMessage> {
     // 从环境变量获取 API 密钥和基础 URL
     const apiKey = process.env.CHATGLM_API_KEY
-    const baseUrl = process.env.CHATGLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4'
+    const baseUrl =
+      process.env.CHATGLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4'
 
     if (!apiKey) {
       throw new HttpException(
@@ -53,9 +54,10 @@ export class McpService {
       if (axiosError.response) {
         // API 返回错误
         const responseData = axiosError.response.data as Record<string, any>
-        const errorMessage = responseData && responseData.message 
-          ? responseData.message 
-          : axiosError.response.statusText
+        const errorMessage =
+          responseData && responseData.message
+            ? responseData.message
+            : axiosError.response.statusText
         throw new HttpException(
           `ChatGLM API 错误: ${errorMessage}`,
           axiosError.response.status,
@@ -86,7 +88,8 @@ export class McpService {
   ): Promise<IncomingMessage> {
     // 从环境变量获取 API 密钥和基础 URL
     const apiKey = process.env.CHATGLM_API_KEY
-    const baseUrl = process.env.CHATGLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4'
+    const baseUrl =
+      process.env.CHATGLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4'
 
     if (!apiKey) {
       throw new HttpException(
@@ -128,9 +131,10 @@ export class McpService {
       if (axiosError.response) {
         // API 返回错误
         const responseData = axiosError.response.data as Record<string, any>
-        const errorMessage = responseData && responseData.message 
-          ? responseData.message 
-          : axiosError.response.statusText
+        const errorMessage =
+          responseData && responseData.message
+            ? responseData.message
+            : axiosError.response.statusText
         throw new HttpException(
           `ChatGLM Web Search API 错误: ${errorMessage}`,
           axiosError.response.status,
@@ -225,10 +229,7 @@ export class McpService {
         // 调用现有的网络搜索功能
         return await this.callWebSearchTool(args)
       default:
-        throw new HttpException(
-          `未知工具: ${toolName}`,
-          HttpStatus.BAD_REQUEST,
-        )
+        throw new HttpException(`未知工具: ${toolName}`, HttpStatus.BAD_REQUEST)
     }
   }
 

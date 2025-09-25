@@ -25,9 +25,7 @@ export class ChatRequestDto {
   @ApiProperty({
     description: '消息历史',
     type: [MessageDto],
-    example: [
-      { role: 'user', content: '你好，介绍一下你自己' },
-    ]
+    example: [{ role: 'user', content: '你好，介绍一下你自己' }],
   })
   @IsArray()
   @IsNotEmpty()
@@ -35,7 +33,7 @@ export class ChatRequestDto {
 
   @ApiPropertyOptional({
     description: '模型名称',
-    example: 'glm-4'
+    example: 'glm-4',
   })
   @IsOptional()
   @IsString()
@@ -45,7 +43,7 @@ export class ChatRequestDto {
     description: '温度参数，控制生成文本的随机性',
     example: 0.8,
     minimum: 0,
-    maximum: 1
+    maximum: 1,
   })
   @IsOptional()
   @IsNumber()
@@ -57,7 +55,7 @@ export class ChatRequestDto {
     description: 'top_p参数，控制生成文本的多样性',
     example: 0.8,
     minimum: 0,
-    maximum: 1
+    maximum: 1,
   })
   @IsOptional()
   @IsNumber()
@@ -69,7 +67,7 @@ export class ChatRequestDto {
 export class SearchRequestDto {
   @ApiProperty({
     description: '搜索查询',
-    example: '人工智能的最新发展'
+    example: '人工智能的最新发展',
   })
   @IsString()
   @IsNotEmpty()
@@ -77,7 +75,7 @@ export class SearchRequestDto {
 
   @ApiPropertyOptional({
     description: '模型名称',
-    example: 'glm-4'
+    example: 'glm-4',
   })
   @IsOptional()
   @IsString()
@@ -87,7 +85,7 @@ export class SearchRequestDto {
     description: '温度参数，控制生成文本的随机性',
     example: 0.8,
     minimum: 0,
-    maximum: 1
+    maximum: 1,
   })
   @IsOptional()
   @IsNumber()
@@ -99,7 +97,7 @@ export class SearchRequestDto {
     description: 'top_p参数，控制生成文本的多样性',
     example: 0.8,
     minimum: 0,
-    maximum: 1
+    maximum: 1,
   })
   @IsOptional()
   @IsNumber()
