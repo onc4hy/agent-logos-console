@@ -37,6 +37,7 @@ export class VoiceGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     // 模拟处理结果
     setTimeout(() => {
+      // 使用类型检查确保client是有效的WebSocket实例且处于OPEN状态
       if (client.readyState === WebSocket.OPEN) {
         client.send(
           JSON.stringify({
@@ -65,6 +66,7 @@ export class VoiceGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     // 模拟处理结果
     setTimeout(() => {
+      // 使用类型检查确保client是有效的WebSocket实例且处于OPEN状态
       if (client.readyState === WebSocket.OPEN) {
         client.send(
           JSON.stringify({

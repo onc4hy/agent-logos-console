@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { UserService } from '../auth/user.service'
+import { CheckInResponseDto, GetUserPointsResponseDto } from './dto/points.dto'
 
 @Injectable()
 export class PointsService {
   constructor(private userService: UserService) {}
 
-  async checkIn(userId: number): Promise<any> {
+  async checkIn(userId: number): Promise<CheckInResponseDto> {
     // 检查用户今天是否已经签到
     // 为简化起见，我们假设用户可以每天签到
 
@@ -29,7 +30,7 @@ export class PointsService {
     }
   }
 
-  async getUserPoints(userId: number): Promise<any> {
+  async getUserPoints(userId: number): Promise<GetUserPointsResponseDto> {
     const user = await this.userService.findById(userId)
     if (!user) {
       throw new Error('User not found')

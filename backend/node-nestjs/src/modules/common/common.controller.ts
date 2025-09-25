@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { firstValueFrom } from 'rxjs'
+import { AxiosResponse, AxiosError } from 'axios'
 import { FetchJsonDto } from './dto/fetch-json.dto'
 import {
   ApiTags,
@@ -38,12 +39,12 @@ export class CommonController {
   @ApiInternalServerErrorResponse({ description: '服务器内部错误' })
   async fetchJsonFromUrl(
     @Query(new ValidationPipe({ transform: true })) query: FetchJsonDto,
-  ) {
+  ): Promise<unknown> {
     const { url } = query
 
     try {
       // 发送 GET 请求获取 JSON 数据
-      const response = await firstValueFrom(
+      const response: AxiosResponse<unknown> = await firstValueFrom(
         this.httpService.get(url, {
           headers: {
             Accept: 'application/json',
@@ -53,7 +54,9 @@ export class CommonController {
       )
 
       // 检查响应是否为JSON格式
-      const contentType = response.headers['content-type']
+      const contentType: string | undefined = response.headers[
+        'content-type'
+      ] as string | undefined
       if (!contentType || !contentType.includes('application/json')) {
         throw new HttpException(
           'The URL does not return JSON data',
@@ -63,24 +66,29 @@ export class CommonController {
 
       // 返回获取到的 JSON 数据
       return response.data
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error
       }
 
-      if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      // 类型断言为 AxiosError 来安全访问 error 属性
+      const axiosError = error as AxiosError
+      if (
+        axiosError.code === 'ENOTFOUND' ||
+        axiosError.code === 'ECONNREFUSED'
+      ) {
         throw new HttpException(
           'Unable to connect to the provided URL',
           HttpStatus.BAD_GATEWAY,
         )
       }
 
-      if (error.code === 'ECONNABORTED') {
+      if (axiosError.code === 'ECONNABORTED') {
         throw new HttpException('Request timeout', HttpStatus.REQUEST_TIMEOUT)
       }
 
       throw new HttpException(
-        `Failed to fetch JSON data: ${error.message}`,
+        `Failed to fetch JSON data: ${axiosError.message || 'Unknown error'}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
     }

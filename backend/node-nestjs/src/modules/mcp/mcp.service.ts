@@ -53,9 +53,9 @@ export class McpService {
       const axiosError = error as AxiosError
       if (axiosError.response) {
         // API 返回错误
-        const responseData = axiosError.response.data as Record<string, any>
+        const responseData = axiosError.response.data as Record<string, unknown>
         const errorMessage =
-          responseData && responseData.message
+          responseData && typeof responseData.message === 'string'
             ? responseData.message
             : axiosError.response.statusText
         throw new HttpException(
@@ -130,9 +130,9 @@ export class McpService {
       const axiosError = error as AxiosError
       if (axiosError.response) {
         // API 返回错误
-        const responseData = axiosError.response.data as Record<string, any>
+        const responseData = axiosError.response.data as Record<string, unknown>
         const errorMessage =
-          responseData && responseData.message
+          responseData && typeof responseData.message === 'string'
             ? responseData.message
             : axiosError.response.statusText
         throw new HttpException(

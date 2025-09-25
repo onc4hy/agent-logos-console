@@ -8,6 +8,11 @@ import {
 import { PaymentService } from './payment.service'
 import { CreatePaymentDto, VerifyPaymentDto } from './dto/payment.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import {
+  CreatePaymentResponse,
+  VerifyPaymentResponse,
+} from './interfaces/payment.interface'
+import type { AuthenticatedRequest } from './interfaces/request.interface'
 
 @ApiTags('支付')
 @Controller('payment')
@@ -20,16 +25,18 @@ export class PaymentController {
   @UseGuards(JwtAuthGuard)
   @Post('create')
   async createPayment(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Body() createPaymentDto: CreatePaymentDto,
-  ) {
+  ): Promise<CreatePaymentResponse> {
     return this.paymentService.createPayment(req.user.id, createPaymentDto)
   }
 
   @ApiOperation({ summary: '验证支付结果' })
   @ApiResponse({ status: 200, description: '支付验证成功' })
   @Post('verify')
-  async verifyPayment(@Body() verifyPaymentDto: VerifyPaymentDto) {
+  async verifyPayment(
+    @Body() verifyPaymentDto: VerifyPaymentDto,
+  ): Promise<VerifyPaymentResponse> {
     return this.paymentService.verifyPayment(verifyPaymentDto)
   }
 }

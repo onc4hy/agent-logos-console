@@ -20,6 +20,18 @@ import { PostService } from './post.service'
 import { CreatePostDto, UpdatePostDto, CreateCommentDto } from './dto/post.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 
+// 定义请求用户对象的接口
+interface RequestUser {
+  id: number
+  email: string
+  name: string
+}
+
+// 扩展 Request 接口以包含 user 属性
+interface AuthenticatedRequest extends Request {
+  user: RequestUser
+}
+
 @ApiTags('社区')
 @Controller('community')
 export class CommunityController {
@@ -30,7 +42,10 @@ export class CommunityController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('posts')
-  async createPost(@Request() req, @Body() createPostDto: CreatePostDto) {
+  async createPost(
+    @Request() req: AuthenticatedRequest,
+    @Body() createPostDto: CreatePostDto,
+  ) {
     return this.postService.create(req.user.id, createPostDto)
   }
 
@@ -80,7 +95,7 @@ export class CommunityController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('my-posts')
-  async findMyPosts(@Request() req) {
+  async findMyPosts(@Request() req: AuthenticatedRequest) {
     return this.postService.findByUser(req.user.id)
   }
 
@@ -89,7 +104,10 @@ export class CommunityController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('comments')
-  async addComment(@Request() req, @Body() createCommentDto: CreateCommentDto) {
+  async addComment(
+    @Request() req: AuthenticatedRequest,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
     return this.postService.addComment(req.user.id, createCommentDto)
   }
 
