@@ -1,10 +1,10 @@
 # MCP 模块使用指南
 
-MCP (Model Chat Provider) 模块提供与 ChatGLM 最新模型服务聊天对话的功能，并支持返回 SSE (Server-Sent Events) 数据流。
+MCP (Model Context Protocol) 模块提供与 ChatGLM Web Search API 集成的功能，支持网络搜索和上下文管理。
 
 ## API 端点
 
-### 与 ChatGLM 模型聊天
+### 1. 与 ChatGLM 模型聊天
 
 - **URL**: `/mcp/chat`
 - **方法**: `POST`
@@ -26,10 +26,28 @@ MCP (Model Chat Provider) 模块提供与 ChatGLM 最新模型服务聊天对话
 }
 ```
 
+### 2. 使用 ChatGLM Web Search API 进行网络搜索
+
+- **URL**: `/mcp/search`
+- **方法**: `POST`
+- **请求头**: 
+  - `Content-Type: application/json`
+- **请求体**:
+
+```json
+{
+  "query": "人工智能的最新发展",
+  "model": "glm-4",        // 可选，默认为 glm-4
+  "temperature": 0.8,      // 可选，默认为 0.8
+  "top_p": 0.8             // 可选，默认为 0.8
+}
+```
+
 ## 使用示例
 
 ### cURL 示例
 
+#### 聊天对话
 ```bash
 curl -X POST http://localhost:3000/mcp/chat \
   -H "Content-Type: application/json" \
@@ -46,10 +64,23 @@ curl -X POST http://localhost:3000/mcp/chat \
   }'
 ```
 
+#### 网络搜索
+```bash
+curl -X POST http://localhost:3000/mcp/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "人工智能的最新发展",
+    "model": "glm-4",
+    "temperature": 0.8,
+    "top_p": 0.8
+  }'
+```
+
 ### JavaScript (Fetch API) 示例
 
 ```javascript
-const response = await fetch('/mcp/chat', {
+// 聊天对话
+const chatResponse = await fetch('/mcp/chat', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -67,6 +98,20 @@ const response = await fetch('/mcp/chat', {
   })
 });
 
+// 网络搜索
+const searchResponse = await fetch('/mcp/search', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    query: '人工智能的最新发展',
+    model: 'glm-4',
+    temperature: 0.8,
+    top_p: 0.8
+  })
+});
+
 // 处理 SSE 流式响应
 const reader = response.body.getReader();
 const decoder = new TextDecoder();
@@ -77,76 +122,25 @@ while (true) {
   
   const chunk = decoder.decode(value);
   console.log('Received:', chunk);
-}
-```
-
-### JavaScript (EventSource) 示例
-
-```javascript
-// 注意：EventSource 通常用于 GET 请求，对于 POST 请求需要使用 Fetch API
-// 以下是一个使用 Fetch API 处理 SSE 的示例
-
-async function chatWithModel() {
-  const response = await fetch('/mcp/chat', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      messages: [
-        {
-          role: 'user',
-          content: '你好，介绍一下你自己'
-        }
-      ]
-    })
-  });
-
-  // 检查响应是否成功
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  // 处理流式响应
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value);
-      // 处理接收到的数据块
-      console.log('Received chunk:', chunk);
-      
-      // 如果需要解析 SSE 格式的数据
-      const lines = chunk.split('\n');
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6); // 移除 'data: ' 前缀
-          if (data === '[DONE]') {
-            // 流结束
-            break;
-          }
-          try {
-            const jsonData = JSON.parse(data);
-            console.log('Parsed data:', jsonData);
-          } catch (e) {
-            console.error('Failed to parse JSON:', e);
-          }
-        }
+  
+  // 如果需要解析 SSE 格式的数据
+  const lines = chunk.split('\n');
+  for (const line of lines) {
+    if (line.startsWith('data: ')) {
+      const data = line.slice(6); // 移除 'data: ' 前缀
+      if (data === '[DONE]') {
+        // 流结束
+        break;
+      }
+      try {
+        const jsonData = JSON.parse(data);
+        console.log('Parsed data:', jsonData);
+      } catch (e) {
+        console.error('Failed to parse JSON:', e);
       }
     }
-  } catch (error) {
-    console.error('Error reading stream:', error);
-  } finally {
-    reader.releaseLock();
   }
 }
-
-// 调用函数
-chatWithModel();
 ```
 
 ## 响应格式

@@ -39,7 +39,7 @@ export class ChatRequestDto {
   })
   @IsOptional()
   @IsString()
-  model?: string;
+  model?: string
 
   @ApiPropertyOptional({
     description: '温度参数，控制生成文本的随机性',
@@ -51,7 +51,7 @@ export class ChatRequestDto {
   @IsNumber()
   @Min(0)
   @Max(1)
-  temperature?: number;
+  temperature?: number
 
   @ApiPropertyOptional({
     description: 'top_p参数，控制生成文本的多样性',
@@ -63,7 +63,7 @@ export class ChatRequestDto {
   @IsNumber()
   @Min(0)
   @Max(1)
-  top_p?: number;
+  top_p?: number
 }
 
 export class SearchRequestDto {
@@ -73,7 +73,7 @@ export class SearchRequestDto {
   })
   @IsString()
   @IsNotEmpty()
-  query: string;
+  query: string
 
   @ApiPropertyOptional({
     description: '模型名称',
@@ -81,7 +81,7 @@ export class SearchRequestDto {
   })
   @IsOptional()
   @IsString()
-  model?: string;
+  model?: string
 
   @ApiPropertyOptional({
     description: '温度参数，控制生成文本的随机性',
@@ -93,7 +93,7 @@ export class SearchRequestDto {
   @IsNumber()
   @Min(0)
   @Max(1)
-  temperature?: number;
+  temperature?: number
 
   @ApiPropertyOptional({
     description: 'top_p参数，控制生成文本的多样性',
@@ -105,5 +105,5 @@ export class SearchRequestDto {
   @IsNumber()
   @Min(0)
   @Max(1)
-  top_p?: number;
+  top_p?: number
 }
