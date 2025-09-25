@@ -1,4 +1,4 @@
-# 智能体调音台 - 创建、编辑、配置和部署AI智能体到第三方平台的SaaS服务平台
+# Agent-Opus-Console 智能体作品集操纵台 - 创建、编辑、配置和部署AI智能体到第三方平台的智能体作品部署操纵台
 
 ## 项目开发缘起
 
@@ -11,7 +11,7 @@
 
 ### AI Coding 的体验报告
 
-> 可浏览code up主随手发布在 juejin.cn 上的关于AI Coding的文章 
+> 浏览code up主随手发布在 juejin.cn 上的关于AI Coding体验的文章 
 >
 > <a href="https://juejin.cn/post/7549162225790074880" target="_blank">2025使用AI Coding 生成代码的一些体验,评测,思考,实践（一）</a>
 
@@ -146,6 +146,8 @@ frontend/vue3-element-plus
    ```bash
    pnpm install
    ```
+   
+   > 注意：请确保使用 pnpm 作为包管理器。如果之前使用过 npm 安装依赖，请删除 `node_modules` 目录和 `package-lock.json` 文件后重新使用 pnpm 安装。
 
 3. 启动开发服务器：
    ```bash
@@ -302,3 +304,4 @@ make format
 3. Node.js后端API端口默认为3000
 4. Python后端API端口默认为8000
 5. 前端开发服务器端口默认为5173
+6. 如果项目中存在 `package-lock.json` 文件，请删除它以确保使用 pnpm

@@ -11,6 +11,8 @@ import { PointsModule } from './modules/points/points.module'
 import { PaymentModule } from './modules/payment/payment.module'
 import { VoiceModule } from './modules/voice/voice.module'
 import { BackupModule } from './modules/backup/backup.module'
+import { CommonModule } from './modules/common/common.module'
+import { McpModule } from './modules/mcp/mcp.module'
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { BackupModule } from './modules/backup/backup.module'
     PaymentModule,
     VoiceModule,
     BackupModule,
+    CommonModule,
+    McpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

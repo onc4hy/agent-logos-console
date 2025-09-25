@@ -3,6 +3,10 @@
 /node_modules
 /build
 
+# npm related
+package-lock.json
+npm-debug.log*
+
 # Logs
 logs
 *.log
