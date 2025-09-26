@@ -20,6 +20,14 @@ import {
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger'
 import { IncomingMessage } from 'http'
+import {
+  InitializeRequestDto,
+  InitializeResponseDto,
+  ListToolsRequestDto,
+  ListToolsResponseDto,
+  CallToolRequestDto,
+  CallToolResponseDto,
+} from './dto/mcp.dto'
 
 @ApiTags('MCP')
 @Controller('mcp')
@@ -129,5 +137,39 @@ export class McpController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
     }
+  }
+
+  // MCP协议端点
+  @Post('initialize')
+  @ApiOperation({ summary: '初始化MCP连接' })
+  @ApiBody({ type: InitializeRequestDto })
+  @ApiOkResponse({ type: InitializeResponseDto })
+  initialize(): InitializeResponseDto {
+    return this.mcpService.initialize()
+  }
+
+  @Post('tools/list')
+  @ApiOperation({ summary: '列出可用工具' })
+  @ApiBody({ type: ListToolsRequestDto })
+  @ApiOkResponse({ type: ListToolsResponseDto })
+  listTools(
+    @Body(new ValidationPipe({ transform: true }))
+    listToolsRequest: ListToolsRequestDto,
+  ): ListToolsResponseDto {
+    return this.mcpService.listTools(listToolsRequest.name)
+  }
+
+  @Post('tools/call')
+  @ApiOperation({ summary: '调用指定工具' })
+  @ApiBody({ type: CallToolRequestDto })
+  @ApiOkResponse({ type: CallToolResponseDto })
+  async callTool(
+    @Body(new ValidationPipe({ transform: true }))
+    callToolRequest: CallToolRequestDto,
+  ): Promise<CallToolResponseDto> {
+    return await this.mcpService.callTool(
+      callToolRequest.name,
+      callToolRequest.arguments || {},
+    )
   }
 }

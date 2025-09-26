@@ -4,6 +4,11 @@ import { firstValueFrom } from 'rxjs'
 import { ChatRequestDto, SearchRequestDto } from './dto/chat-request.dto'
 import { IncomingMessage } from 'http'
 import { AxiosResponse, AxiosError } from 'axios'
+import {
+  InitializeResponseDto,
+  ListToolsResponseDto,
+  CallToolResponseDto,
+} from './dto/mcp.dto'
 
 @Injectable()
 export class McpService {
@@ -159,7 +164,7 @@ export class McpService {
    * 初始化 MCP 连接
    * @returns 服务器能力列表
    */
-  initialize() {
+  initialize(): InitializeResponseDto {
     // 返回服务器支持的能力列表
     return {
       protocolVersion: '2024-05-18',
@@ -180,40 +185,47 @@ export class McpService {
    * 列出可用工具
    * @returns 工具列表
    */
-  listTools() {
-    return {
-      tools: [
-        {
-          name: 'web-search',
-          description: '使用 ChatGLM Web Search API 进行网络搜索',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              query: {
-                type: 'string',
-                description: '搜索查询',
-              },
-              model: {
-                type: 'string',
-                description: '模型名称',
-              },
-              temperature: {
-                type: 'number',
-                description: '温度参数',
-                minimum: 0,
-                maximum: 1,
-              },
-              top_p: {
-                type: 'number',
-                description: 'top_p参数',
-                minimum: 0,
-                maximum: 1,
-              },
+  listTools(name?: string): ListToolsResponseDto {
+    const allTools = [
+      {
+        name: 'web-search',
+        description: '使用 ChatGLM Web Search API 进行网络搜索',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            query: {
+              type: 'string',
+              description: '搜索查询',
             },
-            required: ['query'],
+            model: {
+              type: 'string',
+              description: '模型名称',
+            },
+            temperature: {
+              type: 'number',
+              description: '温度参数',
+              minimum: 0,
+              maximum: 1,
+            },
+            top_p: {
+              type: 'number',
+              description: 'top_p参数',
+              minimum: 0,
+              maximum: 1,
+            },
           },
+          required: ['query'],
         },
-      ],
+      },
+    ]
+
+    // 如果提供了name参数，则进行过滤
+    const filteredTools = name
+      ? allTools.filter((tool) => tool.name.includes(name))
+      : allTools
+
+    return {
+      tools: filteredTools,
     }
   }
 
@@ -223,7 +235,10 @@ export class McpService {
    * @param args 工具参数
    * @returns 工具调用结果
    */
-  async callTool(toolName: string, args: Record<string, any>) {
+  async callTool(
+    toolName: string,
+    args: Record<string, any>,
+  ): Promise<CallToolResponseDto> {
     switch (toolName) {
       case 'web-search':
         // 调用现有的网络搜索功能
@@ -238,7 +253,9 @@ export class McpService {
    * @param args 搜索参数
    * @returns 搜索结果
    */
-  private async callWebSearchTool(args: Record<string, any>) {
+  private async callWebSearchTool(
+    args: Record<string, any>,
+  ): Promise<CallToolResponseDto> {
     const searchRequest: SearchRequestDto = {
       query: args.query as string,
       model: args.model as string | undefined,
@@ -247,12 +264,14 @@ export class McpService {
     }
 
     try {
+      // 执行搜索
       await this.searchWithWeb(searchRequest)
-      // 这里我们需要将流转换为适当的格式
-      // 为了简化，我们返回一个表示成功的响应
+
+      // 为了简化MCP协议的实现，我们返回一个表示成功的响应
+      // 在实际应用中，你可能需要处理流并返回实际的搜索结果
       return {
         content: {
-          message: '搜索请求已发送',
+          message: '搜索请求已发送并完成',
           query: args.query as string,
         },
         isError: false,
