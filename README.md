@@ -1,28 +1,57 @@
-# Agent-Opus-Console 智能体作品集操纵台 - 创建、编辑、配置和部署AI智能体到第三方平台的智能体作品部署操纵台
+# Agent-Logos-Console 智能体逻辑工具台 - 创建、编辑、配置和部署AI智能体到第三方平台的智能体工具台
 
-## 项目开发缘起
+## 项目缘起
 
-> AI Coding已经进入到代理型Coding的成熟时代，
+> AI Coding已经进入到代理型Coding的成熟时代，即使现在还是在AI自身的起步时代。
+> 没有实践，发言就缺乏可信；有了实践，不够深度和广度也依然可信度不高。
 > 为了正式的体验和测试AI Coding的边界，所以就有了这个项目。
-> 至于针对功能，是随手找了一个有实际需求的目标，项目就这么产生了。
-> 至少到代码的目前阶段，无论前后端，无论是几种类型，
-> 都是在对话中由AI Coding 工具生成的。
-> 可以快速的看到AI Coding 的效果.
+> 至于体验范围，随手找了一个有实际需求的目标： 开发和部署多个智能体到不同的智能体应用平台需求的部署需要，项目就这么产生了。
+> 在代码的起始阶段，无论前后端，无论是几种类型，都是在对话中由AI Coding 工具生成的。
+> 可以让观望者和使用者快速看到AI Coding 的效果边界.
+> 在代码的后期阶段，才会以人工对代码的逻辑处理和编写为主
 
-### AI Coding 的体验报告
+## 命名缘由
 
-> 浏览code up主随手发布在 juejin.cn 上的关于AI Coding体验的文章 
+> 无他，即使在以`概率统计`为`底层核心`的AI时代， 逻辑，或者叫，逻格斯，Logos,始终应该是一个人类应该保有的信仰和坚持。
+
+## AI Coding 的体验报告
+
+> 关于AI Coding体验的文章 
 >
 > <a href="https://juejin.cn/post/7549162225790074880" target="_blank">2025使用AI Coding 生成代码的一些体验,评测,思考,实践（一）</a>
 
-## 项目概述
+## 概述
 
-> 基本由AI Coding工具驱动和代码生成的智能体调音台是一个为个人或公司提供创建、编辑、配置和部署AI智能体到第三方平台的SaaS服务平台。
+> 基本由AI Coding工具驱动和生成代码的智能体逻辑工具台是一个为个人或团队/公司提供创建、编辑、配置和部署AI智能体到第三方平台的智能体工具台。
 > 该项目包含前端和后端两个部分。
-> 前端:vue3(element-plus),react版本后续
-> 后端:node(nestjs),python(fastapi)的实现版本，java版本后续，其他版本（例如go)看情况
+> 前端:
+>     vue3(element-plus),react版本后续
+> 后端:
+>     node(nestjs),python(fastapi)的实现版本，java版本后续，其他版本（例如go)看情况
 
-## 效果预览
+## 功能路线图
+
+- [ ] 多个智能体部署
+- [ ] 用户系统
+- [ ] WebSocket 消息服务
+- [ ] MCP 扩展服务
+- [ ] 第三方应用平台管理
+- [ ] 智能体工作流编辑
+
+## 代码多端同步计划
+   - 前端
+      - [x] vue3版本
+      - [ ] react版本
+      - [ ] react native版本
+      - [ ] uniapp版本
+      - [ ] flutter版本
+   - 后端
+      - [x] node版本
+      - [x] python版本
+      - [ ] java版本
+      - [ ] go版本
+
+## 预览
 
 - 前端
   - 首页
@@ -38,19 +67,22 @@
   - 注册
    ![首页](./docs/screenshots/register.png)
 
+- 后端
+  - API Swagger 接口文档
+
 ## 前端 (frontend)
 
 ### 技术栈
 - Vue 3
-- Vite
-- TypeScript
-- Element Plus
-- Tailwind CSS v4
-- Pinia (状态管理)
-- Vue Router
+   - Vite
+   - TypeScript
+   - Element Plus
+   - Tailwind CSS v4
+   - Pinia (状态管理)
+   - Vue Router
 
 ### 配色方案
-项目采用Google Material Design 3风格的配色体系：
+项目采用Google Material Design 3风格的配色体系(Deepseek 网页对话辅助生成)：
 - 主色 (Primary): #0D47A1 (Ocean Deep Blue)
 - 主色容器 (Primary Container): #1565C0 (Quantum Blue)
 - 辅助色 (Secondary): #00B0FF (Electric Cyan)
@@ -109,30 +141,34 @@ frontend/vue3-element-plus
 ## 后端 (backend)
 
 ### 技术栈
-项目包含两个后端实现：
+项目目前包含两个后端实现：
 
 1. **Node.js NestJS版本** (推荐用于生产环境)
    - NestJS
    - TypeORM
-   - SQLite
-     (使用sql.js驱动，原因是避免客户端部署时需要编译驱动)
+   - SQLite/PGLite
+     (目前在考虑使用sql.js/pglite驱动间摇摆，原因是尽量避免客户端部署时需要在目标平台还要本地编译驱动)
    - WebSocket
    - Swagger
+   - MCP
 
 2. **Python FastAPI版本** (目前还在Node版本之后同步实现)
    - FastAPI
    - SQLAlchemy
    - SQLite
    - Uvicorn
+   - WebSocket
+   - MCP
 
 ### 功能模块
-1. 认证模块 - 用户注册/登录、JWT认证
+1. 用户模块 - 用户注册/登录、JWT认证
 2. 智能体模块 - 智能体管理、部署到第三方平台
 3. 社区模块 - 帖子发布/评论、点赞功能
 4. 积分模块 - 签到、积分管理
 5. 支付模块 - 支付订单、验证
-6. 语音模块 - WebSocket语音通信
 7. 备份模块 - 数据备份功能
+6. 消息和语音模块 - WebSocket语音通信
+8. MCP模块 - 大模型的MCP协议扩展支持
 
 ### Node.js NestJS后端
 
